@@ -10,7 +10,8 @@ int csh_shell_run()
     CshNode *curr = g_csh_root;
     char **token_list = NULL;
     printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
-    printf("Thanks for using CShell in your project.\n");
+    printf("Welcome to Cshell, type '?' to list available command.\n");
+    printf("Every command is started by 'root', e.g. 'root help'.\n");
     printf("    %10s: %s\n", "Author", "Kevin Cyu");
     printf("    %10s: %s\n", "Contact", "kevinbird61@gmail.com");
     printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
@@ -34,8 +35,11 @@ int csh_shell_run()
                     break;
             }
         }
+        /* handle special/built-in command */
+        if (STRING_COMPARE(cli_buf, "exit")) {
+            break;
+        }
         /* get command and tokenize */
-        // printf("%s (%ld)\n", cli_buf, strlen(cli_buf));
         token_num = _csh_cmd_tokenize(&token_list, cli_buf, " ");
         /* exec */
         if (_csh_exec_cmd(&token_list, 0, token_num, g_csh_root) != CS_SUCCESS) {
@@ -43,8 +47,10 @@ int csh_shell_run()
             /* TODO: Search any available/possible CLI and print out suggestion */
         }
     }
-    printf("\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
-    
+    printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+    printf("Thanks for using CShell in your project, Bye!\n");
+    printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+
     return ret;
 }
 
@@ -58,7 +64,7 @@ int _csh_exec_cmd(
     int ret = CS_SUCCESS;
     char *token = (*token_list)[token_idx];
     
-    //printf("[%s] token = %s, node = %s. (%d/%d)\n", __FUNCTION__, token, ptr->name, token_idx, token_num);
+    // printf("[%s] token = %s, node = %s. (%d/%d)\n", __FUNCTION__, token, ptr->name, token_idx, token_num);
 
     if (STRING_COMPARE(token, ptr->name)) {
         // Match, search next
@@ -73,8 +79,14 @@ int _csh_exec_cmd(
                 }
             } else {
                 // no other children, current token is not support
-                // printf("[%s] Command ('%s') Not Support.\n", __FUNCTION__, token);
-                ret = CS_FAILURE;
+                // Handle special case (Check next token)
+                if (STRING_COMPARE(((*token_list)[token_idx + 1]), "?")) {
+                    printf("[%s][HELP] User type '?' to list CLI hint. (Depth: %d)\n", __FUNCTION__, ptr->depth);
+                    printf("[%s][HELP] No available command under '%s'\n", __FUNCTION__, token);
+                    ret = CS_SUCCESS;
+                } else {
+                    ret = CS_FAILURE;
+                }
             }
         } else {
             //printf("[%s] Reach the end, exec it.\n", __FUNCTION__);
@@ -89,8 +101,14 @@ int _csh_exec_cmd(
     } else {
         // Handle special case
         if (STRING_COMPARE(token, "?")) {
-            printf("[%s][HELP] User type '?' to list CLI hint.\n", __FUNCTION__);
-            printf("[%s][HELP] Current Depth: %d\n", __FUNCTION__, ptr->depth);
+            printf("[%s][HELP] User type '?' to list CLI hint. (Depth: %d)\n", __FUNCTION__, ptr->depth);
+            if (ptr->depth) {
+                ptr = ptr->parent;
+            }
+            printf("[%s][HELP] Support options under '%s' (%d) :\n", __FUNCTION__, ptr->name, ptr->num);
+            for (int i=0; i<ptr->num; i++){
+                printf("[%s][HELP]  - '%s': %s\n", __FUNCTION__, (ptr->children[i])->name, (ptr->children[i])->desc);
+            }
             ret = CS_SUCCESS;
         } else {
             // printf("[%s] Command ('%s') Not Support.\n", __FUNCTION__, token);

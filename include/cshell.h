@@ -8,7 +8,7 @@
 #include "cshell_ascii_color.h"
 
 #define CSH_CLI_BUFSIZ  256
-#define CSH_PROMPT      UCYN"CShell>"COLOR_RESET
+#define CSH_PROMPT      UCYN"CShell>"COLOR_RESET" "
 
 typedef unsigned char       u8;
 typedef unsigned short      u16;
