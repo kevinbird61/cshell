@@ -10,19 +10,6 @@
 #define CSH_CLI_BUFSIZ  256
 #define CSH_PROMPT      CSH_COLOR_UCYN"CShell>"CSH_COLOR_RESET" "
 
-#ifndef u8
-typedef unsigned char       u8;
-#endif
-#ifndef u16
-typedef unsigned short      u16;
-#endif
-#ifndef u32
-typedef unsigned int        u32;
-#endif
-#ifndef u64
-typedef unsigned long long  u64;
-#endif
-
 #define STRING_COMPARE(str1,str2) \
     ((strlen(str1)==strlen(str2)) && (!memcmp(str1, str2, strlen(str1))))
 
@@ -39,12 +26,12 @@ typedef struct csh_rule_t {
 } CshRule;
 
 typedef struct csh_node_t {
-    char    *name;
-    char    *desc;
-    u16     num;
-    u16     depth;
-    void    *args;
-    void    *(*func)(void *);
+    char            *name;
+    char            *desc;
+    unsigned short  num;
+    unsigned short  depth;
+    void            *args;
+    void            *(*func)(void *);
     struct csh_node_t *parent;
     struct csh_node_t **children;
 } CshNode;

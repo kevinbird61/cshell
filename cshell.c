@@ -6,7 +6,7 @@ int csh_shell_run()
     int ret = CS_SUCCESS,
         token_num = 0;
     char c, cli_buf[CSH_CLI_BUFSIZ];
-    u8 buf_idx = 0, buf_wait = 1;
+    unsigned char buf_idx = 0, buf_wait = 1;
     CshNode *curr = g_csh_root;
     char **token_list = NULL;
     printf("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
@@ -204,7 +204,7 @@ int csh_shell_add(
                 _csh_create_child(it, token_list[i], rule);
             } else {
                 // iterate all children
-                u8  found = 0;
+                unsigned char found = 0;
                 for (int j=0; j<it->num; j++) {
                     if (STRING_COMPARE((it->children[j])->name, token_list[i])) {
                         // found, move "it" to this children
@@ -235,7 +235,7 @@ int _csh_create_child(
 )
 {
     int ret = CS_SUCCESS;
-    u16 idx = parent->num;
+    unsigned short idx = parent->num;
 
     // printf("Parent: %s (%d), New: %s\n", parent->name, parent->num, token);
 
