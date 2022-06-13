@@ -4,7 +4,7 @@ TESTS:=$(patsubst examples/%.c, $(TEST_PREFIX)%, $(wildcard examples/*.c))
 RELEASE:=libcshell.a
 
 CC:=gcc
-CFLAGS:=-std=gnu99
+CFLAGS:=-std=gnu99 -static
 FLAGS:=
 INC:=-I include/
 
@@ -18,7 +18,7 @@ $(TEST_PREFIX)%: examples/%.c $(RELEASE)
 	$(CC) $< $(INC) $(CFLAGS) $(FLAGS) -o $@ -L. -lcshell
 
 $(RELEASE): $(OBJS)
-	ar cr $(RELEASE) $(OBJS)
+	ar rcs $(RELEASE) $(OBJS)
 	ranlib $(RELEASE)
 
 .PHONY=clean
