@@ -1,4 +1,4 @@
-OBJS:=$(patsubst %.c, %.o, $(subst src/,,$(wildcard src/*.c)))
+OBJS:=$(patsubst %.c, %.o, $(wildcard *.c))
 TEST_PREFIX:=examples/demo_
 TESTS:=$(patsubst examples/%.c, $(TEST_PREFIX)%, $(wildcard examples/*.c))
 RELEASE:=libcshell.a
@@ -6,7 +6,7 @@ RELEASE:=libcshell.a
 CC:=gcc
 CFLAGS:=-std=gnu99 -static
 FLAGS:=
-INC:=-I include/
+INC:=-I .
 
 all: $(RELEASE) $(TESTS)
 release: $(RELEASE)
